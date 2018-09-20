@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test</title>
+		<link rel="stylesheet" href="css/main.css">
+		<script src="js/jquery-3.3.1.min.js"></script>
+	</head>
+	<body>
+		<div id="main">
+			<div id="center">
+				<div id="text">
+					<div id="question">7 + 4 = ?</div>
+					<div id="answer"></div>
+				</div>
+				<div id="img">
+					<canvas id="imgCanvas"></canvas>
+				</div>
+			</div>
+		</div>
+		<script>
+			var a = [6, 7, 8, 9];
+			var b = [2, 3, 4, 5];
+
+			var rA = Math.floor(Math.random() * a.length);
+			var rB = Math.floor(Math.random() * b.length);
+
+			$("#question").text(a[rA] + " + " + b[rB] + " = ?");
+
+			function draw(e) {
+				var canvas = document.getElementById('imgCanvas');
+				var ctx = canvas.getContext('2d');
+
+		        ctx.beginPath();
+		        var startX = 13;
+		        var endX = 15 * e;
+		        var startY = 115;
+		        var endY = 115;
+		        ctx.moveTo(startX,startY);
+		        ctx.bezierCurveTo(startX, startY - endY, endX, startY - endY, endX, endY);
+		        ctx.strokeStyle = "red";
+		        ctx.stroke();
+
+		        var forLeft = endX + startX;
+		        addInput(forLeft, 1);
+
+			}
+
+			function drawsSec(s, e) {
+				var canvas = document.getElementById('imgCanvas');
+				var ctx = canvas.getContext('2d');
+
+		        ctx.beginPath();
+		        var startX = 15 * s;
+		        var endX = startX + 14 * e;
+		        var startY = 115;
+		        var endY = 115;
+		        ctx.moveTo(startX,startY);
+		        ctx.bezierCurveTo(startX, startY - endY, endX, startY - endY, endX, endY);
+		        ctx.strokeStyle = "red";
+		        ctx.stroke();
+
+		        var forLeft = endX + startX;
+		        addInput(forLeft, 2);
+
+			}
+
+			function addInput(l,n){
+
+				var elem = $("<input type='number' min='1' name='number" + n + "' style='position:absolute;left:" + l + "px;top:20px' />").val("");
+				$("#img").append(elem);
+			}
+
+			function drawImg(){
+				var canvas = document.getElementById('imgCanvas');
+				var ctx = canvas.getContext('2d');
+				var img = new Image();
+
+				img.onload = function() {
+					ctx.drawImage(img, 0, 110, 300, 30);
+				};
+				img.src = "images/sprite.png";
+			}
+
+			$(function(){
+				draw(a[rA]);
+				drawImg();
+
+				$("#main").on('change','input',function() {
+					var name = $("input").attr("name");
+					var v = $("input").val();
+					switch(name){
+						case "number1":
+							if (parseInt(v) == a[rA])
+							{
+								$("input").remove();
+								drawsSec(a[rA], b[rB]);
+							}
+							break;
+						case "number2":
+							if (parseInt(v) == b[rB])
+							{
+								$("input").remove();
+								$("#question").text(a[rA] + " + " + b[rB] + " =");
+								var elem = $("<input type='number' min='1' name='answer'/>").val("");
+								$("#answer").append(elem);
+							}
+							break;
+						case "answer":
+							if (parseInt(v) == a[rA] + b[rB])
+							{
+								alert("Правильно!");
+								$("#question").text(a[rA] + " + " + b[rB] + " = " + (a[rA] + b[rB]));
+								$("input").remove();
+							}
+							break;
+					}
+				});
+					
+			});
+		</script>
+	</body>
+</html>
